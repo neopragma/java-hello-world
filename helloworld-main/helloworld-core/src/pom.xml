@@ -1,0 +1,212 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.neopragma</groupId>
+  <artifactId>helloworld</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>Hello World</name>
+  <description>A trivial sample project used in demonstrations and training.</description>
+  <url>http://github.com/neopragma/java-hello-world</url>
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+      <distribution>repo</distribution>
+      <comments>MIT open source license</comments>
+    </license>
+  </licenses>
+  <organization>
+    <name>Neo Pragma LLC</name>
+    <url>http://neopragma.com</url>
+  </organization>
+  <developers>
+    <developer>
+      <id>neopragma</id>
+      <name>Dave Nicolette</name>
+      <email>dave@neopragma.com</email>
+      <url>http://neopragma.com/index.php/about/</url>
+      <organization>Neo Pragma LLC</organization>
+      <organizationUrl>http://neopragma.com</organizationUrl>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+      <timezone>America/Phoenix</timezone>
+      <properties>
+        <picUrl>https://media.licdn.com/mpr/mpr/shrink_100_100/AAEAAQAAAAAAAAb4AAAAJDA3MzYyY2UxLWQ3ODYtNDBmZS1hZDRkLTk5MzJjY2M5MTUzOA.jpg</picUrl>
+      </properties>
+    </developer>
+  </developers>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <!-- https://mvnrepository.com/artifact/junit/junit -->
+    <!-- Unit testing framework -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+    </dependency>
+
+    <!-- Mocking library for unit tests -->
+    <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.10.19</version>
+    </dependency>
+
+    <!-- Control the Java compiler version -->
+    <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.5.1</version>
+    </dependency>
+
+    <!-- Control unit test execution -->
+    <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
+    <dependency>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.19.1</version>
+    </dependency>
+
+    <!-- Control integration test execution -->
+    <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-failsafe-plugin -->
+    <dependency>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.19.1</version>
+    </dependency>
+
+    <!-- Customize the Maven build environment -->
+    <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/build-helper-maven-plugin -->
+    <dependency>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>build-helper-maven-plugin</artifactId>
+      <version>1.10</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-jar-plugin</artifactId>
+      <version>3.0.2</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>
+      ${project.artifactId}
+    </finalName>
+
+    <plugins>
+
+      <!-- Set the Java compiler version -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+
+      <!-- Exclude integration tests from the unit test goal -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.18.1</version>
+        <configuration>
+          <excludedGroups>com.neopragma.helloworld.IntegrationTest</excludedGroups>
+        </configuration>
+      </plugin>
+
+      <!-- Include integration tests in the integration-test and verify goals -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.19.1</version>
+        <configuration>
+          <includes>
+        	  <include>**/*.java</include>
+          </includes>
+          <groups>com.neopragma.helloworld.IntegrationTest</groups>
+        </configuration>
+        <executions>
+        	<execution>
+        	  <goals>
+        	    <goal>integration-test</goal>
+        	    <goal>verify</goal>
+        	  </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Customize Maven lifecycle -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.10</version>
+        <executions>
+          <!-- Add integration test source directory -->
+          <execution>
+        	  <id>add-integration-test-sources</id>
+        	  <phase>generate-test-sources</phase>
+        	  <goals>
+        	    <goal>add-test-source</goal>
+        	  </goals>
+        	  <configuration>
+        	    <sources>
+        	      <source>src/integration-test/java</source>
+        	    </sources>
+        	  </configuration>
+          </execution>
+          <!-- Copy integration test resources -->
+          <execution>
+          	<id>add-integration-test-resources</id>
+          	<phase>generate-test-resources</phase>
+        	  <goals>
+        	    <goal>add-test-resource</goal>
+        	  </goals>
+        	  <configuration>
+        	    <resources>
+        	      <resource>
+        	        <filtering>true</filtering>
+        	        <directory>src/integration-test/resources</directory>
+        	      </resource>
+        	    </resources>
+        	  </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+         <!-- Build an executable JAR -->
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-jar-plugin</artifactId>
+         <version>3.0.2</version>
+         <configuration>
+           <archive>
+             <manifest>
+               <addClasspath>true</addClasspath>
+               <classpathPrefix>lib/</classpathPrefix>
+               <mainClass>com.neopragma.helloworld.Hello</mainClass>
+             </manifest>
+           </archive>
+         </configuration>
+       </plugin>
+
+    <!-- This declaration suppresses a warning message on 'mvn site'
+         due to missing version for the artifact. -->
+    <plugin>
+      <artifactId>maven-project-info-reports-plugin</artifactId>
+      <version>2.9</version>
+    </plugin>
+  </plugins>
+  </build>
+</project>
